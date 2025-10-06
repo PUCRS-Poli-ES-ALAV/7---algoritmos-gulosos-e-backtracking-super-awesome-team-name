@@ -4,24 +4,27 @@ import java.util.List;
 
 public class App {
 
-    public static double[] change(double[] coins, double value) {
-        List<Double> result = new ArrayList<>();
+    public static List<Double[]> change(double[] coins, double value) {
+        List<Double[]> result = new ArrayList<>();
+        value *= 100;
+        double numOfCoins = 0;
         for (int i = coins.length - 1; i >= 0; i--) {
-            while (value >= coins[i]) {
-                value -= coins[i];
-                value = Math.round(value * 100.0) / 100.0;
-                result.add(coins[i]);
+            if (value > coins[i]) {
+                numOfCoins = Math.floor(value / coins[i]);
+                value = value % coins[i];
+                result.add(new Double[] { coins[i], numOfCoins });
             }
         }
-        return result.stream().mapToDouble(Double::doubleValue).toArray();
+        return result;
     }
 
     public static void main(String[] args) {
-        double[] coins = { 0.01, 0.05, 0.10, 0.25, 0.50, 1.00 };
+        double[] coins = { 1, 5, 10, 25, 50, 100 };
         double value = 1.99;
-        double[] result = change(coins, value);
-        for (double coin : result) {
-            System.out.printf("$%.2f ", coin);
+        List<Double[]> result = change(coins, value);
+        for (Double[] coin : result) {
+            // number of each coin
+            System.out.println("$" + coin[0] / 100 + " x" + coin[1]);
         }
     }
 }
